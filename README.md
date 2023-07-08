@@ -1,2 +1,13 @@
 # Battleship
-Classic Battleship Game
+
+> Background info
+
+> Screenshots
+
+> Technologies Used
+
+> Getting Started
+
+> Bugs
+
+> Future Enhancements
