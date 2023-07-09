@@ -39,6 +39,7 @@ function createBoard(color, user) {
   board.classList.add("game-board");
   board.style.backgroundColor = color;
   gameBoardsContainer.append(board);
+  // User as an input to differentiate game boards to make it easier to target boards for functionality//
   board.id = user;
 
   // Create the game tiles //
@@ -53,7 +54,36 @@ function createBoard(color, user) {
   }
 }
 
-// Call Gameboard function twice to create 2 boards: 1 for player and 1 for AI
+// Call Gameboard function twice to create 2 boards: 1 for player and 1 for computer
 // Input a string for the color
 createBoard("#6699CC", "player");
-createBoard("#6699CC", "Computer");
+createBoard("#6699CC", "computer");
+
+// Battleship Object Creation //
+class Ship {
+  construction(name, length) {
+    this.name = name;
+    this.length = length;
+  }
+}
+
+//Initiaite each battleship type into new object class//
+const destroyer = new Ship("destroyer", 2);
+const cruiser = new Ship("cruiser", 3);
+const submarine = new Ship("submarine", 3);
+const battleship = new Ship("battleship", 4);
+const aircraft_carrier = new Ship("aircraft_carrier", 5);
+
+// Place object into an array for computer to generate into its board //
+const shipsArray = [
+  destroyer,
+  cruiser,
+  submarine,
+  battleship,
+  aircraft_carrier,
+];
+
+// To Do: (21/03/2023) 43:18
+// AI/Computer component
+// Noob AI - Random
+// Format CSS to be more presentable
