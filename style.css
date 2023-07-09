@@ -1,0 +1,11 @@
+/* Battleship Header */
+#battleship-logo {
+  margin-right: 1em;
+}
+
+/* Main body of game */
+.board-identity-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
