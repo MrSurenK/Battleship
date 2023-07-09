@@ -5,7 +5,103 @@
 
 /* Main body of game */
 .board-identity-container {
+  width: 100%;
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
 }
+
+/* Gameboard Styling (10x10 Board) */
+
+/* Both gameboard's container */
+#gameboards-container {
+  width: 100%;
+  display: flex;
+  justify-content: space-evenly;
+}
+
+/* Element and class created via Javascript (Refer to gameboard creation section */
+.game-board {
+  width: 200px;
+  height: 200px;
+  display: flex;
+  /* Stops tiles from forming outside of each gameboard container or stacking up on the top line */
+  flex-wrap: wrap;
+}
+
+/* Gameboard tiles */
+.tile {
+  width: 20px;
+  height: 20px;
+  border: solid 1px black;
+  box-sizing: border-box;
+}
+
+/* Shipyard Styling */
+.shipyard-container {
+  width: 250px;
+  height: 100px;
+  margin: 30px, 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Ship Styling */
+
+/* Destroyer */
+.destroyer {
+  background-color: #696969;
+}
+
+.destroyer-model {
+  width: 20px; /* Destroyer is 2 units long */
+  height: 10px;
+  margin: 3px;
+}
+
+/* Cruiser Styling */
+.cruiser {
+  background-color: #696969;
+}
+
+.cruiser-model {
+  width: 30px; /* Cruiser is 3 units long */
+  height: 10px;
+  margin: 3px;
+}
+
+/* Submarine Styling */
+.submarine {
+  background-color: #696969;
+}
+
+.submarine-model {
+  width: 30px; /* Submarine is 3 units long */
+  height: 10px;
+  margin: 3px;
+}
+
+/* Battleship Styling */
+.battleship {
+  background-color: #696969;
+}
+
+.battleship-model {
+  width: 40px; /* Battleship is 4 units long */
+  height: 10px;
+  margin: 3px;
+}
+
+/* Aircraft Carrier Styling */
+.aircraft-carrier {
+  background-color: #696969;
+}
+
+.aircraft-carrier-model {
+  width: 50px; /* Aircraft-Carrier is 5 units long */
+  height: 10px;
+  margin: 3px;
+}
+
+/* button formatting */
