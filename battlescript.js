@@ -74,6 +74,8 @@ const submarine = new Ship("submarine", 3);
 const battleship = new Ship("battleship", 4);
 const aircraft_carrier = new Ship("aircraft_carrier", 5);
 
+// AI/Computer component
+
 // Place object into an array for computer to generate into its board //
 const shipsArray = [
   destroyer,
@@ -84,6 +86,19 @@ const shipsArray = [
 ];
 
 // To Do: (21/03/2023) 43:18
-// AI/Computer component
-// Noob AI - Random
+
+// Function to place the ships //
+function placeShip() {
+  const getTiles = document.querySelectorAll("#computer div");
+  // Creates a random index for computer to start placing its ship on
+  // Edge case: Ship object length is too long for the board horizontally and vertically
+  let 
+  let randomStartIndex = Math.floor(Math.random() * width * width);
+  console.log(randomStartIndex);
+}
+
+placeShip();
+
+// Noob AI - Randomly add pieces to board
+
 // Format CSS to be more presentable
