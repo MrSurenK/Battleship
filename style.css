@@ -43,7 +43,6 @@
   display: grid;
   grid-template-columns: repeat(8, 20fr);
   grid-template-rows: repeat(2, 50px);
-  justify-items: center;
 }
 
 .shipyard-container {
