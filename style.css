@@ -38,6 +38,14 @@
 }
 
 /* Shipyard Styling */
+
+.ship-container-pos {
+  display: grid;
+  grid-template-columns: repeat(8, 20fr);
+  grid-template-rows: repeat(2, 50px);
+  justify-items: center;
+}
+
 .shipyard-container {
   width: 250px;
   height: 100px;
@@ -45,6 +53,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  grid-column: 2;
+  grid-row: 2;
 }
 
 /* Ship Styling */
