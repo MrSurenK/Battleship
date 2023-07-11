@@ -95,7 +95,7 @@ function placeShip(ship) {
   // Create ship orientation, horizontal or vertical
   // trueOrFalse returms a random boolean
   let RandomTrueOrFalse = Math.random() < 0.5; // Makes it 50% chance of true or False
-  let horizontalShip = RandomTrueOrFalse; //if true then ship will be placed horizontally on the board
+  const horizontalShip = RandomTrueOrFalse; //if true then ship will be placed horizontally on the board
   // Creates a random index for computer to start placing its ship on
   let randomStartIndex = Math.floor(Math.random() * width * width);
   console.log(randomStartIndex);
@@ -184,3 +184,39 @@ shipsArray.forEach((ship) => placeShip(ship));
 // To do (11/07):
 // 2. Complete Edge case of ships overlapping each other and cutting at the ends of the board.
 // 3. Finish up MVP
+
+// -- Ship drag and drop --
+
+// Convert the shiyardContainer children DOM into an array
+
+let draggedShip;
+
+const optionShips = Array.from(shipyardContainer.children);
+// Add event listener "dragstart" to each of the children element in the new array storing children elements of shipYardContainer optionShips
+optionShips.forEach((optionShip) =>
+  optionShip.addEventListener("dragstart", dragShip)
+);
+
+// Save to the variable all the player tiles on the player board (NodeList)
+const allPlayerTiles = document.querySelectorAll("player div");
+
+// Listen for drag over event on all the player tiles
+allPlayerTiles.forEach((eachTile) => {
+  eachTile.addEventListener("dragover", dragOverTile);
+  eachTile.addEventListener("drop", dropShip);
+});
+
+// Callback function for event listener "dragstart"
+function dragShip(event) {
+  draggedShip = event.target;
+}
+
+// Callback function for event listener "dragover"
+function dragOverTile(event) {
+  console.log(event.target);
+}
+
+// Callback function for event listener "drop"
+function dropShip(event) {
+  console.log(event.target);
+}
