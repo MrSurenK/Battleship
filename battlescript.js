@@ -62,7 +62,7 @@ createBoard("#6699CC", "computer");
 
 // Battleship Object Creation //
 class Ship {
-  construction(name, length) {
+  constructor(name, length) {
     this.name = name;
     this.length = length;
   }
@@ -75,6 +75,7 @@ const submarine = new Ship("submarine", 3);
 const battleship = new Ship("battleship", 4);
 const aircraft_carrier = new Ship("aircraft_carrier", 5);
 
+// console.log(destroyer);
 // AI/Computer component
 
 // Place object into an array for computer to generate into its board //
@@ -118,6 +119,7 @@ function placeShip(ship) {
     ? randomStartIndex
     : randomStartIndex - ship.length * width + width;
 
+  // Array that stores the dom elements of the blocks containing the ships
   let shipsOnBoard = [];
 
   // for loop to determine the position of the ship on the board
@@ -126,7 +128,7 @@ function placeShip(ship) {
     // if statement to identify the divs that the ship will take up within the board
     // Picks the next few tiles from the random first pick according to ship length and pushes into shipsOnBoard array
     if (horizontalShip) {
-      shipsOnBoard.push(allBoardTiles[Number(validStart) + i]); //***NOT CONSOLE.LOGGING!*** or ***NOT BEING ADDED TO shipsOnBoard array***/
+      shipsOnBoard.push(allBoardTiles[Number(validStart) + i]);
       // This means that the the ship is verticle.
     } else {
       // Instead of adding to the div with the next index number, will add to the div (i * width) index number away. Which should bne directly below the first random div index making the ship verticle. (Loop logic commented below)
@@ -138,18 +140,17 @@ function placeShip(ship) {
       shipsOnBoard.push(allBoardTiles[Number(validStart) + i * width]);
     }
   }
-  console.log(shipsOnBoard); //***NOT CONSOLE.LOGGING!*** or ***NOT BEING ADDED TO shipsOnBoard array***/
+  console.log(shipsOnBoard);
 
   // Edge case 2: Ships overlapping each other and splitting at the ends 55:00
 
   // Coloring of the tiles taken up by the ship. Identified via the shipsOnBoard array.
-  shipsOnBoard.forEach((ship) => {
-    shipsOnBoard.classlist.add(ship.name);
-    // This indicates that the tile has been taken so there wont be overlaps
-    shipsOnBoard.classList.add("taken");
+  shipsOnBoard.forEach((shipTile) => {
+    shipTile.classList.add(ship.name);
+    // This indicates that the tile has been taken
+    shipTile.classList.add("taken");
   });
 }
-
 // Computer nows randomly places ships on its board //
 shipsArray.forEach((ship) => placeShip(ship));
 
