@@ -69,11 +69,12 @@ class Ship {
 }
 
 //Initiaite each battleship type into new object class//
+// Made sure the name initiated matches CSS styling as objects will be put as classname in dom.
 const destroyer = new Ship("destroyer", 2);
 const cruiser = new Ship("cruiser", 3);
 const submarine = new Ship("submarine", 3);
 const battleship = new Ship("battleship", 4);
-const aircraft_carrier = new Ship("aircraft_carrier", 5);
+const aircraft_carrier = new Ship("aircraft-carrier", 5);
 
 // console.log(destroyer);
 // AI/Computer component
@@ -86,8 +87,6 @@ const shipsArray = [
   battleship,
   aircraft_carrier,
 ];
-
-// To Do: (21/03/2023) 43:18
 
 // Function to place the ships //
 // Edge case: Ship object length is too long for the board horizontally and vertically (Requires check for space on board!)
@@ -103,12 +102,12 @@ function placeShip(ship) {
   console.log(randomStartIndex);
 
   // Edge case 1: Not enought tiles on the board for the ship at the ends. After adding up the ship length the ship is longer than the board width (eg random index starts at index 98 + ship length of 5 = index 100 to 113 out of range) but board only has 100 divs  55:30//
-
+  // Make all the ships fit on the computer board
   // Check horizontal and vertical validity using ternary operator
   // condition ? exprIfTrue : exprIfFalse
-  // if ship is horizontal check to see if the start index is samller than 100 - the ship length
+  // if ship is horizontal check to see if the start index is samller than (100 - the ship length)
   // if the above is true then just return the randomStartIndex and go as per normal
-  // if not true then return 100 - ship length as starting index in validStart variable
+  // if not true then return (100 - ship length) as starting index in validStart variable. Push back the starting index to accomodate the ship
   let validStart = horizontalShip
     ? randomStartIndex <= width * width - ship.length
       ? randomStartIndex
@@ -155,6 +154,5 @@ function placeShip(ship) {
 shipsArray.forEach((ship) => placeShip(ship));
 
 // To do (11/07):
-// 1. Solve ship not displaying on board issue and array adding for that matter.
 // 2. Complete Edge case of ships overlapping each other and cutting at the ends of the board.
 // 3. Finish up MVP
