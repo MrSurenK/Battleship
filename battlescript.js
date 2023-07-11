@@ -89,7 +89,6 @@ const shipsArray = [
 ];
 
 // Function to place the ships //
-// Edge case: Ship object length is too long for the board horizontally and vertically (Requires check for space on board!)
 function placeShip(ship) {
   const allBoardTiles = document.querySelectorAll("#computer div");
   // console.log(allBoardTiles);
@@ -101,13 +100,7 @@ function placeShip(ship) {
   let randomStartIndex = Math.floor(Math.random() * width * width);
   console.log(randomStartIndex);
 
-  // Edge case 1: Not enought tiles on the board for the ship at the ends. After adding up the ship length the ship is longer than the board width (eg random index starts at index 98 + ship length of 5 = index 100 to 113 out of range) but board only has 100 divs  55:30//
-  // Make all the ships fit on the computer board
-  // Check horizontal and vertical validity using ternary operator
-  // condition ? exprIfTrue : exprIfFalse
-  // if ship is horizontal check to see if the start index is samller than (100 - the ship length)
-  // if the above is true then just return the randomStartIndex and go as per normal
-  // if not true then return (100 - ship length) as starting index in validStart variable. Push back the starting index to accomodate the ship
+  // Edge case 1: Ship tiles out of range and
   let validStart = horizontalShip
     ? randomStartIndex <= width * width - ship.length
       ? randomStartIndex
@@ -141,14 +134,49 @@ function placeShip(ship) {
   }
   console.log(shipsOnBoard);
 
-  // Edge case 2: Ships overlapping each other and splitting at the ends 55:00
+  // Edge case 2: Ships splitting at the ends
+  // Decalre a variable valid to store the result of the last iteration
+  let valid;
+  //  Check if ships split at the ends when orientated horizontalally
+  // index 0 is used as it is the first tile random tile that will determine the subsequent tiles (ship length)
+  if (horizontalShip) {
+    shipsOnBoard.every(
+      (_shipTile, index) =>
+        (valid =
+          shipsOnBoard[0].id % width !==
+          width - (shipsOnBoard.length - (index + 1)))
+    );
+  } else {
+    // For verticle ships check if ship tile split at the top or bottom
+    shipsOnBoard.every(
+      (_shipTile, index) =>
+        // 90 is the first tile of the last row.
+        // Check if the 1st item in the array is less than 90 + (10+0+1) = 101(it shd be below 90 but it does not exist as the board is only 10x10) and if it is then it is valid and assign to valid (if not generate random again later by calling the higher order function below!)
+        // Since the verticles ships are added downwards. We are only concerned with the last row of the board (index 90-99)
+        (valid = shipsOnBoard[0].id < 90 + (width + index + 1))
+    );
+  }
 
-  // Coloring of the tiles taken up by the ship. Identified via the shipsOnBoard array.
-  shipsOnBoard.forEach((shipTile) => {
-    shipTile.classList.add(ship.name);
-    // This indicates that the tile has been taken
-    shipTile.classList.add("taken");
-  });
+  // Edge case 3: Prevent overlapping
+  const notTaken = shipsOnBoard.every(
+    // Check if in the shipsOnBoard array any tile is not taken
+    (shipTile) => !shipTile.classList.contains("taken")
+  );
+
+  // Add color only if valid is true // -- ships will not be cut off onto the next line
+  if (valid && notTaken) {
+    // Coloring of the tiles taken up by the ship. Identified via the shipsOnBoard array.
+    shipsOnBoard.forEach((shipTile) => {
+      shipTile.classList.add(ship.name);
+      // This indicates that the tile has been taken
+      shipTile.classList.add("taken");
+    });
+    // Means there are invalid ships cutting onto wrong lines on the board or invalid ships overlapping. So generate random index again.
+    // Creates a sort of while loop in the function//
+    // It will regenrate the wrong indexed ship only -- > console.log will shipsOnBoard to see!
+  } else {
+    placeShip(ship);
+  }
 }
 // Computer nows randomly places ships on its board //
 shipsArray.forEach((ship) => placeShip(ship));
