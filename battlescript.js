@@ -92,21 +92,12 @@ const shipsArray = [
 // Variable to allow player to drop ship instead of computer
 let notDropped;
 
-// Function to place the ships --> startIdForShip variable only for user drag and dropped ship
-function addAShip(user, ship, startIdForShip) {
-  const allBoardTiles = document.querySelectorAll(`#${user} div`);
-  // console.log(allBoardTiles);
-  // Create ship orientation, horizontal or vertical
-  // trueOrFalse returms a random boolean
-  let RandomTrueOrFalse = Math.random() < 0.5; // Makes it 50% chance of true or False
-  //if true then ship will be placed horizontally on the board
-  const horizontalShip = user === "player" ? angle === 0 : RandomTrueOrFalse; //If the user is the player then we set angle to 0 to let player decide ship orientation. If not it is the computer and we generate a random orientation for the ship to be placed on the computer board.
-  // Creates a random index for computer to start placing its ship on
-  let randomStartIndex = Math.floor(Math.random() * width * width);
-  // If startIdForShip exists, it means the player is placing his ship and we return the start id for the ship the player decides on. If not it is the computer and we let it decide the random Start index on its board.
-  let startIndex = startIdForShip ? startIdForShip : randomStartIndex;
-  console.log(startIndex);
-
+//Check position validity
+// Pass through allBoardTIles depending on if it is computer or user board
+// Pass through horizontalShip true or false
+// Pass through startIndex of the first tile for the ship
+// Pass through the type of ship
+function checkPosVal(allBoardTiles, horizontalShip, startIndex, ship) {
   // Edge case 1: Ship tiles out of range (Tile div exceeds index 99)
   let validStart = horizontalShip
     ? startIndex <= width * width - ship.length
@@ -182,6 +173,36 @@ function addAShip(user, ship, startIdForShip) {
     (shipTile) => !shipTile.classList.contains("taken")
   );
 
+  // return the 3 objects to be used in other functions to check the space validity and prevent edge cases from happening, 1. shipsOnBoard array storing the div doms that the ship will take up, 2. if the space is a valid space or not, 3. if the spake has already be taken or not
+  // shipsOnBoard returns array
+  // valid returns true or false
+  // notTaken returs true or false
+  return { shipsOnBoard, valid, notTaken };
+}
+
+// Function to place the ships --> startIdForShip variable only for user drag and dropped ship
+function addAShip(user, ship, startIdForShip) {
+  const allBoardTiles = document.querySelectorAll(`#${user} div`);
+  // console.log(allBoardTiles);
+  // Create ship orientation, horizontal or vertical
+  // trueOrFalse returms a random boolean
+  const RandomTrueOrFalse = Math.random() < 0.5; // Makes it 50% chance of true or False
+  //if true then ship will be placed horizontally on the board
+  const horizontalShip = user === "player" ? angle === 0 : RandomTrueOrFalse; //If the user is the player then we set angle to 0 to let player decide ship orientation. If not it is the computer and we generate a random orientation for the ship to be placed on the computer board.
+  // Creates a random index for computer to start placing its ship on
+  let randomStartIndex = Math.floor(Math.random() * width * width);
+  // If startIdForShip exists, it means the player is placing his ship and we return the start id for the ship the player decides on. If not it is the computer and we let it decide the random Start index on its board.
+  let startIndex = startIdForShip ? startIdForShip : randomStartIndex;
+  console.log(startIndex);
+
+  // Pass through validity check function and return the output of the checkPosVal function
+  const { shipsOnBoard, valid, notTaken } = checkPosVal(
+    allBoardTiles,
+    horizontalShip,
+    startIndex,
+    ship
+  );
+
   // Add color only if valid and notTaken is true // -- ships will not be cut off onto the next line or overlap one another
   if (valid && notTaken) {
     // Coloring of the tiles taken up by the ship. Identified via the shipsOnBoard array.
@@ -197,7 +218,7 @@ function addAShip(user, ship, startIdForShip) {
     // if computer, we want to regenerate a new randomStartIndex to place the ship
     //  Have to pass the user in the addShip so that the above code will run accordingly as the querySelector(1st line requires a user input)
     if (user === "computer") {
-      addAShip("computer", ship);
+      addAShip(user, ship, startIdForShip);
     }
     // if player we do not want the computer to drop the ship.
     if (user === "player") {
@@ -242,6 +263,11 @@ function startDragShip(event) {
 function dragOverTile(event) {
   //Default event of "dragover" will be cancelled
   event.preventDefault();
+  // Get the correct ship out through the id from shipsArray
+  const ship = shipsArray[draggedShip.id];
+  // pass in the exact if of the tile being draggwedw over
+  // pass through the ship
+  tileAreaIndicator(event.target.id, ship);
 }
 
 // Callback function for event listener "drop"
@@ -259,3 +285,28 @@ function dropShip(event) {
     draggedShip.remove();
   }
 }
+
+// Add tile highlight to indicate to player where exactly it will go on board
+function tileAreaIndicator(startIdForShip, ship) {
+  // Get the tiles for the playerboard
+  const allPlayerTiles = document.querySelectorAll("#player div");
+  // If angle = 0 it means ship being dragged around is horizontal
+  let horizontalShip = angle === 0;
+  // Get return values of checkPosVal --> which checkst the position validity on the board
+  const { shipsOnBoard, valid, notTaken } = checkPosVal(
+    allPlayerTiles,
+    horizontalShip,
+    startIdForShip,
+    ship
+  );
+
+  // Add and remove the hover classes on the tile divs on the board
+  if (valid && notTaken) {
+    shipsOnBoard.forEach((shipTile) => {
+      shipTile.classList.add("hover");
+      setTimeout(() => shipTile.classList.remove("hover"), 500);
+    });
+  }
+}
+
+// --GAME LOGIC-- //

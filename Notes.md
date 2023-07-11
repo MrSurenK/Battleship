@@ -24,3 +24,5 @@
 8. classList.contains(" ") checks the class of the element. Returns true or false
 9. shipTile is an item in the array of shipOnBoard
 10. The **_dragstart event_** is fired when the user starts dragging an element or text selection.
+11. In javascript return { example1, example 2 } means you are returning an object with the same key value pair such as example 1 = example 1 etc,
+    1. Every data type and function is an object in javascript ES6

@@ -113,4 +113,15 @@
   margin: 3px;
 }
 
-/* button formatting */
+/* hover formatting */
+.hover {
+  background-color: bisque;
+}
+
+.hit {
+  background-color: red;
+}
+
+.miss {
+  background-color: blue;
+}
