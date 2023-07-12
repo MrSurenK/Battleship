@@ -26,3 +26,6 @@
 10. The **_dragstart event_** is fired when the user starts dragging an element or text selection.
 11. In javascript return { example1, example 2 } means you are returning an object with the same key value pair such as example 1 = example 1 etc,
     1. Every data type and function is an object in javascript ES6
+12. HTML DOM is an object with its own properties
+    1. The DOM length property in HTML is used to get the number of items in a NodeList object. A NodeList is a collection of child Nodes. For example, the NodeList of the body will contain all the child nodes in the body i.e. paragraphs, comments, headings, script, etc.
+    2. The children property returns a collection of an element's child elements. The children property returns an HTMLCollection object.

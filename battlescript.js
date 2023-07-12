@@ -78,7 +78,7 @@ const aircraft_carrier = new Ship("aircraft-carrier", 5);
 
 // console.log(destroyer);
 
-// -- AI/Computer component --
+// -- Ships moving features --
 
 // Place object into an array for computer to generate into its board //
 const shipsArray = [
@@ -310,3 +310,43 @@ function tileAreaIndicator(startIdForShip, ship) {
 }
 
 // --GAME LOGIC-- //
+
+let gameOver = false;
+let playerTurn;
+
+// Start Game
+
+// Store start button dom in variable
+const startButton = document.querySelector("#start-game");
+// Store info dom in a variable
+const infoDisplay = document.querySelector("#info");
+// Store turn display dom in a variable
+const turnDisplay = document.querySelector("#turn-display");
+
+startButton.addEventListener("click", startGame);
+
+function startGame() {
+  // shipyeardContainer.children.length returns 5 in chrome console. (Indicating that it contains all the ship dom when none of it is moved. When one ship is moved onto the board it become 4)
+  if (shipyardContainer.children.length != 0) {
+    infoDisplay.textContent = "Position your fleet!";
+  } else {
+    // get the computer tiles that player will be attacking on
+    const allComputerTiles = document.querySelectorAll("#computer div");
+    // Listen for the clicks on each computer tiles
+    allComputerTiles.forEach((tile) =>
+      tile.addEventListener("click", handleClick)
+    );
+  }
+}
+
+function handleClick(event) {
+  // As long as game is still being played. If the selected tile has a ship add the class "hit" to the tile indicating a hit through CSS
+  if (!gameOver) {
+    if (event.target.classList.contain("taken")) {
+      // Turns the tile red
+      event.target.classList.add("hit");
+      // Add info text to indicate to player that computer placed ship was hit
+      infoDisplay.textContent = "Hit!";
+    }
+  }
+}
