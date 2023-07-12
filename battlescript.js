@@ -339,8 +339,14 @@ function startGame() {
   }
 }
 
+// Array to keep track of ship tiles hit by player
 let playerHits = [];
+// Array to keep track of ship tiles hit by computer
 let computerHits = [];
+// Array to keep track of entire ships sunk by player
+const playerSunkShips = [];
+// Array to keep track of entire ships sunk by computer
+const computerSunkShips = [];
 
 function handleClick(event) {
   // As long as game is still being played. If the selected tile has a ship add the class "hit" to the tile indicating a hit through CSS
@@ -367,6 +373,8 @@ function handleClick(event) {
       classes = classes.filter((className) => className !== "taken");
       // Use spread operator on classes array to iterate and push all the items in classes array up to PlayerHits.(#remember that handlClick is a callback function to handleclick event listener. So this will run on every click by player on the computer board)
       playerHits.push(...classes);
+      // Check damage and score
+      checkScore("player", playerHits, playerSunkShips);
 
       // Test playerHits array (--> returns an array of all the battleships that have been successfully hit. )
       console.log(playerHits);
@@ -427,6 +435,7 @@ function computerTurn() {
 
         // Push the class name of the ship that was hit but this time push it to the computerHits array.
         computerHits.push(...classes);
+        checkScore("computer", computerHits, computerSunkShips);
         // Else statement for if the computer missed a tile
       } else {
         // Display to the player that the compyter missed
@@ -452,4 +461,37 @@ function computerTurn() {
       );
     }, 6000);
   }
+}
+
+// Track the entire ship types and number of ships destroyed
+// userHits will be the player or computer hits array declared globally at the start
+//
+function checkScore(user, userHits, userSunkShips) {
+  // Declare another function here to get the ship type destroyed out and display it to the player
+  function checkShip(shipName, shipLength) {
+    if (
+      // from the userHits array, iterate through the array and filter each ship with the same ship name as in the checkShip function input and get its length.
+      // if its length is equal to the ship length as in the input of checkShip function then that ship has been destroyed!
+      userHits.filter((storedShipName) => storedShipName === shipName)
+        .length === shipLength
+    ) {
+      // Display the respective ship that got sunk and by who.
+      infoDisplay.textContent = `You sunk the ${user}'s ${shipName}`;
+    }
+  }
+
+  //Within the checkScore run the checkShip function for each ship object so that the function can check for each ship in the respective hits array.
+  checkShip("destroyer", 2);
+  checkShip("submarine", 3);
+  checkShip("cruiser", 3);
+  checkShip("battleship", 4);
+  checkShip("aircraft-carrier", 5);
+
+  // Test
+  // console.log("playerHits", playerHits);
+  // console.log("playerSunkShips", playerSunkShips);
+
+  // Computer
+  // console.log("computerHite", computerHits);
+  // console.log("computerSunkShips", computerSunkShips);
 }
