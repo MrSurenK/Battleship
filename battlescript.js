@@ -326,16 +326,26 @@ const turnDisplay = document.querySelector("#turn-display");
 startButton.addEventListener("click", startGame);
 
 function startGame() {
-  // shipyeardContainer.children.length returns 5 in chrome console. (Indicating that it contains all the ship dom when none of it is moved. When one ship is moved onto the board it become 4)
-  if (shipyardContainer.children.length != 0) {
-    infoDisplay.textContent = "Position your fleet!";
-  } else {
-    // get the computer tiles that player will be attacking on
-    const allComputerTiles = document.querySelectorAll("#computer div");
-    // Listen for the clicks on each computer tiles
-    allComputerTiles.forEach((tile) =>
-      tile.addEventListener("click", handleClick)
-    );
+  if (playerTurn === undefined) {
+    // shipyeardContainer.children.length returns 5 in chrome console. (Indicating that it contains all the ship dom when none of it is moved. When one ship is moved onto the board it become 4)
+    if (shipyardContainer.children.length != 0) {
+      infoDisplay.textContent = "Position your fleet!";
+    } else {
+      // get the computer tiles that player will be attacking on
+      const allComputerTiles = document.querySelectorAll("#computer div");
+      // Listen for the clicks on each computer tiles
+      // Links up to handleClick which is the player's turn function
+      allComputerTiles.forEach((tile) =>
+        tile.addEventListener("click", handleClick)
+      );
+      // Starts player turn only when all the ships from the shipyard has been placed on the player board
+      // Pressing the start button again does not do anything
+      playerTurn = true;
+      // Indicates to player to launch his/her first attack
+      turnDisplay.textContent = "Your turn!";
+      // Indicates the game has started!
+      infoDisplay.textContent = "The game has started!";
+    }
   }
 }
 
@@ -348,6 +358,7 @@ const playerSunkShips = [];
 // Array to keep track of entire ships sunk by computer
 const computerSunkShips = [];
 
+// Player turn function
 function handleClick(event) {
   // As long as game is still being played. If the selected tile has a ship add the class "hit" to the tile indicating a hit through CSS
   if (!gameOver) {
@@ -386,7 +397,7 @@ function handleClick(event) {
       // css styling will be applied upon "miss" hits
       event.target.classList.add("miss");
     }
-    // if above 2 if statements run then end player turn
+    // if above 2 if statements run then end player turn by setting playerTurn = false
     playerTurn = false;
     // get the computer tiles
     const allComputerTiles = document.querySelectorAll("#computer div");
@@ -401,6 +412,7 @@ function handleClick(event) {
 
 // -- AI turn -- //
 
+// Handle click event will run the function computer turn at the end. This pin pongs the turns between the player and the AI.
 function computerTurn() {
   // Game still has to be going
   if (!gameOver) {
@@ -413,6 +425,7 @@ function computerTurn() {
       // Get the player divs on the board for computer to make its pick on.
       const allPlayerBoardTiles = document.querySelectorAll("#player div");
       // if the div in the board has already been hit before (it contains both taken and boom class) then computer should pick another starting tile
+      // randomTurn picks out a random div from all the player board tiles
       if (
         allPlayerBoardTiles[randomTurn].classList.contains("taken") &&
         allPlayerBoardTiles[randomTurn].classList.contains("boom")
@@ -427,8 +440,9 @@ function computerTurn() {
       ) {
         allPlayerBoardTiles[randomTurn].classList.add("hit");
         infoDisplay.textContent = "Computer Hit!";
-        // Same as above, take all the classes of the click tiles and put it in an array called classes
-        let classes = Array.from(event.target.classList);
+        // Same as above except this time we convert allPlayerBoardTiles[randomTurn] inbto the array and take all the classes of the random turn and put it in an array called classes
+        // Unlike player turn in here we are letting the AI randomly choose the choice so there is no need to listen to the event target and we use allPlayerBoardTiles[randomTurn] instead
+        let classes = Array.from(allPlayerBoardTiles[randomTurn]);
         classes = classes.filter((className) => className !== "tile");
         classes = classes.filter((className) => className !== "hit");
         classes = classes.filter((className) => className !== "taken");
@@ -465,22 +479,42 @@ function computerTurn() {
 
 // Track the entire ship types and number of ships destroyed
 // userHits will be the player or computer hits array declared globally at the start
-//
+// user will be the player or computer(AI)
 function checkScore(user, userHits, userSunkShips) {
   // Declare another function here to get the ship type destroyed out and display it to the player
+  // This function will only run if shipName and its corresponding shipLength from the userHits array matches because of the 1st if statements.
   function checkShip(shipName, shipLength) {
     if (
-      // from the userHits array, iterate through the array and filter each ship with the same ship name as in the checkShip function input and get its length.
-      // if its length is equal to the ship length as in the input of checkShip function then that ship has been destroyed!
+      // from the userHits array, iterate through the array and filter out each ship with the same ship name as in the checkShip function input (replace this block of code with that)
+      // Apply .length to the block of code that represent the shipName basically and if its length is equal to the ship length as in the input of checkShip function then that ship has been destroyed!
       userHits.filter((storedShipName) => storedShipName === shipName)
         .length === shipLength
     ) {
-      // Display the respective ship that got sunk and by who.
-      infoDisplay.textContent = `You sunk the ${user}'s ${shipName}`;
+      //Once successfully hit an entire ship, remove it from the playerHits array
+      //Using array filter method, filter out everything that does not equal to the current shipName to get rid of the sunken ship name from the playerHits array
+      // So now the playerHits array will only contain the tiles that do not belong the the ship that got sunk essentially removing it from the array (note that filter method does not modify original array on its own and this is a workaround to get it to.) ==> that is why specified PlayerHits instead of the parameter UserHits
+      if (user === "player") {
+        playerHits = userHits.filter(
+          (storedShipName) => storedShipName !== shipName
+        );
+        // if ship length matches object ship then display the respective ship that got sunk by player
+        infoDisplay.textContent = `You sunk the computer's ${shipName}`;
+      }
+      // same logic as above if statement for the computer's array
+      if (user === "computer") {
+        computerHits = userHits.filter(
+          (storedShipName) => storedShipName !== shipName
+        );
+        // if ship length matches object ship then display the respective ship that got sunk by computer
+        infoDisplay.textContent = `Enemy sunk your ${shipName}!`;
+      }
+      // if shipName parameter has passed through all the above if statements then it has been destroyed and it will now be updated into the respective sunken ship array.
+      // userSunken ship is passed through checkScore function that this function is within and called in the respective computer and player turns above!
+      userSunkShips.push(shipName);
     }
   }
 
-  //Within the checkScore run the checkShip function for each ship object so that the function can check for each ship in the respective hits array.
+  //Call the checkShip function within checkScore for each ship object so that the function can check for each ship in the respective hits array and update into the sunkships array .
   checkShip("destroyer", 2);
   checkShip("submarine", 3);
   checkShip("cruiser", 3);
@@ -488,10 +522,24 @@ function checkScore(user, userHits, userSunkShips) {
   checkShip("aircraft-carrier", 5);
 
   // Test
-  // console.log("playerHits", playerHits);
-  // console.log("playerSunkShips", playerSunkShips);
+  console.log("playerHits", playerHits);
+  console.log("playerSunkShips", playerSunkShips);
 
-  // Computer
-  // console.log("computerHite", computerHits);
-  // console.log("computerSunkShips", computerSunkShips);
+  // End game conditions
+  if (playerSunkShips.length === 5) {
+    infoDisplay.textContent = "Congratulation you have defeated the enemy!";
+    // Ends the game, player wins
+    gameOver = True;
+  }
+  // At the end of the game either one of these should run!
+  if (computerSunkShips.length === 5) {
+    infoDisplay.textContent = "The enemy has destroyed your fleet! Retreat!";
+    // End game, computer wins
+    gameOver = True;
+  }
 }
+
+// To do 13/07/2021:
+// 1. Do some basic styling to tidy up and make game presentable and fix alignments (Make some CSS for the ships and board)
+// 2. Display the ships that the user has destroyed
+// 3. Create a refresh or restart function

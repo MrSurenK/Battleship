@@ -37,6 +37,17 @@
   box-sizing: border-box;
 }
 
+/* Hide the Computer's ships */
+
+#computer .destroyer,
+#computer .submarine,
+#computer .cruiser,
+#computer .battleship,
+#computer .aircraft-carrier {
+  /* Same background color as board */
+  background-color: #6699cc;
+}
+
 /* Shipyard Styling */
 
 .ship-container-pos {
@@ -118,10 +129,12 @@
   background-color: bisque;
 }
 
+/* !important to overide the background colour of the board hiding the computer's ship */
 .hit {
-  background-color: red;
+  background-color: red !important;
 }
 
+/* !important to override the background color of the computer board  */
 .miss {
-  background-color: blue;
+  background-color: blue !important;
 }

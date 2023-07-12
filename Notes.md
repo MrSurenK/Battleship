@@ -29,3 +29,11 @@
 12. HTML DOM is an object with its own properties
     1. The DOM length property in HTML is used to get the number of items in a NodeList object. A NodeList is a collection of child Nodes. For example, the NodeList of the body will contain all the child nodes in the body i.e. paragraphs, comments, headings, script, etc.
     2. The children property returns a collection of an element's child elements. The children property returns an HTMLCollection object.
+13. Console.log comma vs + cocatenation
+
+    1. With the +, console.log() prints the 'skills' section as a joined list. Whereas, with the comma, it prints an array. So the end result isn't quite the same.
+    2. https://teamtreehouse.com/community/consolelog-difference-between-and (comma used when we want to print array)
+
+14. .filter() array method --> creates a new array filled with elements that pass a test provided by a function
+    1. method does not change the original array
+15. CSS !important rule, it will override ALL previous styling rules for that specific property on that element!
