@@ -342,7 +342,7 @@ function startGame() {
 function handleClick(event) {
   // As long as game is still being played. If the selected tile has a ship add the class "hit" to the tile indicating a hit through CSS
   if (!gameOver) {
-    if (event.target.classList.contain("taken")) {
+    if (event.target.classList.contains("taken")) {
       // Turns the tile red
       event.target.classList.add("hit");
       // Add info text to indicate to player that computer placed ship was hit
