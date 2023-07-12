@@ -339,6 +339,9 @@ function startGame() {
   }
 }
 
+let playerHits = [];
+let computerHits = [];
+
 function handleClick(event) {
   // As long as game is still being played. If the selected tile has a ship add the class "hit" to the tile indicating a hit through CSS
   if (!gameOver) {
@@ -347,6 +350,106 @@ function handleClick(event) {
       event.target.classList.add("hit");
       // Add info text to indicate to player that computer placed ship was hit
       infoDisplay.textContent = "Hit!";
+      // Collect only the classname of the div containing the ship name in an array so as to keep track if the ship has been sunk.
+      // This collects the classlist of all the divs that has been clicked
+      let classes = Array.from(event.target.classList);
+
+      // test output: ['tile', 'submarine', 'taken', 'hit']
+      console.log(classes);
+
+      // filter out the irrelevant class names so that only the class name of the battleship is left in the array
+      // filter method creates a new array filled with elements that pass a test provided by a function and it does not change the original classes array.
+      // Classes array will not include tile className
+      classes = classes.filter((className) => className !== "tile");
+      // Classes array will not include tile and hit className
+      classes = classes.filter((className) => className !== "hit");
+      // Classes array will not include tile, hit and taken className leaving only battleship classname
+      classes = classes.filter((className) => className !== "taken");
+      // Use spread operator on classes array to iterate and push all the items in classes array up to PlayerHits.(#remember that handlClick is a callback function to handleclick event listener. So this will run on every click by player on the computer board)
+      playerHits.push(...classes);
+
+      // Test playerHits array (--> returns an array of all the battleships that have been successfully hit. )
+      console.log(playerHits);
     }
+    // Condition for when player misses the target ship
+    if (event.target.classList.contains("taken") === false) {
+      // info will tell player that he miss
+      infoDisplay.textContent = "Miss!";
+      // css styling will be applied upon "miss" hits
+      event.target.classList.add("miss");
+    }
+    // if above 2 if statements run then end player turn
+    playerTurn = false;
+    // get the computer tiles
+    const allComputerTiles = document.querySelectorAll("#computer div");
+    // Remove event listener from all tiles
+    // replaceWith method replaces the element with a cloned copy of itself created by cloneNode.
+    // cloneNode true ensures that all the child elements and their decendants are also cloned
+    allComputerTiles.forEach((tile) => tile.replaceWith(tile.cloneNode(true)));
+    // Async function to give some time before computer starts its turn (simulate thinking)
+    setTimeout(computerTurn, 3000);
+  }
+}
+
+// -- AI turn -- //
+
+function computerTurn() {
+  // Game still has to be going
+  if (!gameOver) {
+    turnDisplay.textContent = "Computer turn";
+    infoDisplay.textContent = "The computer is thinking...";
+
+    setTimeout(() => {
+      // Getting the computer to pick a random tile
+      let randomTurn = Math.floor(Math.random() * width * width);
+      // Get the player divs on the board for computer to make its pick on.
+      const allPlayerBoardTiles = document.querySelectorAll("#player div");
+      // if the div in the board has already been hit before (it contains both taken and boom class) then computer should pick another starting tile
+      if (
+        allPlayerBoardTiles[randomTurn].classList.contains("taken") &&
+        allPlayerBoardTiles[randomTurn].classList.contains("boom")
+      ) {
+        computerTurn();
+        return;
+        // if the div in the board has not "!" been hit before and the tile contains a ship as denoted by the class "taken" then add the class hit to the div.
+        // This will update the css on the player board accordingly.
+      } else if (
+        allPlayerBoardTiles[randomTurn].classList.contains("taken") &&
+        !allPlayerBoardTiles[randomTurn].classList.contains("hit")
+      ) {
+        allPlayerBoardTiles[randomTurn].classList.add("hit");
+        infoDisplay.textContent = "Computer Hit!";
+        // Same as above, take all the classes of the click tiles and put it in an array called classes
+        let classes = Array.from(event.target.classList);
+        classes = classes.filter((className) => className !== "tile");
+        classes = classes.filter((className) => className !== "hit");
+        classes = classes.filter((className) => className !== "taken");
+
+        // Push the class name of the ship that was hit but this time push it to the computerHits array.
+        computerHits.push(...classes);
+        // Else statement for if the computer missed a tile
+      } else {
+        // Display to the player that the compyter missed
+        infoDisplay.textContent = "Computer Miss!";
+        // Indicate a miss on the tile that was clicked by modifying the classList with a miss
+        allPlayerBoardTiles[randomTurn].classList.add("miss");
+      }
+      // Give computer 3 sec to make its turn
+    }, 3000);
+
+    // Give it 6 seconds before passing the turn back to the player
+    setTimeout(() => {
+      // Pass the turn back to player
+      playerTurn = true;
+      // update the displays
+      turnDisplay.textContent = "Your Turn!";
+      infoDisplay.textContent = "Take your aim";
+      // Get all the computer board tiles again
+      const allComputerTiles = document.querySelectorAll("#computer div");
+      // Run the handleclick function again for each player turn to allow the player to interact with the computer board.
+      allComputerTiles.forEach((tile) =>
+        tile.addEventListener("click", handleClick)
+      );
+    }, 6000);
   }
 }
