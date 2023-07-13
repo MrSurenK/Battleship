@@ -37,3 +37,7 @@
 14. .filter() array method --> creates a new array filled with elements that pass a test provided by a function
     1. method does not change the original array
 15. CSS !important rule, it will override ALL previous styling rules for that specific property on that element!
+
+16. For Presentation (10min presentation - keep application presentation to a minimal) - extra 5min for complex games
+    1. Show things that are most interesting
+    2. Parts that I struggle the most with

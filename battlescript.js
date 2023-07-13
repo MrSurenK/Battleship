@@ -164,8 +164,8 @@ function checkPosVal(allBoardTiles, horizontalShip, startIndex, ship) {
     );
   }
 
-  console.log(`ShipsOnBoard array length: ${shipsOnBoard.length}`);
-  console.log(`Valid value = ${valid}`);
+  // console.log(`ShipsOnBoard array length: ${shipsOnBoard.length}`);
+  // console.log(`Valid value = ${valid}`);
 
   // Edge case 3: Prevent overlapping
   const notTaken = shipsOnBoard.every(
@@ -193,7 +193,7 @@ function addAShip(user, ship, startIdForShip) {
   let randomStartIndex = Math.floor(Math.random() * width * width);
   // If startIdForShip exists, it means the player is placing his ship and we return the start id for the ship the player decides on. If not it is the computer and we let it decide the random Start index on its board.
   let startIndex = startIdForShip ? startIdForShip : randomStartIndex;
-  console.log(startIndex);
+  // console.log(startIndex);
 
   // Pass through validity check function and return the output of the checkPosVal function
   const { shipsOnBoard, valid, notTaken } = checkPosVal(
@@ -274,7 +274,7 @@ function dragOverTile(event) {
 function dropShip(event) {
   // startIdForShip stores the id of the target starting div we want to drop the ship on
   const startIdForShip = event.target.id;
-  console.log(startIdForShip);
+  // console.log(startIdForShip);
   // stores the type of ship we are dragging by getting the element attribute associated with the ship in the shipyard container (Manually creat an id for each ship on the html)
   const ship = shipsArray[draggedShip.id];
   // Run the function to add a ship to the player board
@@ -322,7 +322,10 @@ const startButton = document.querySelector("#start-game");
 const infoDisplay = document.querySelector("#info");
 // Store turn display dom in a variable
 const turnDisplay = document.querySelector("#turn-display");
+// get the wreckyard DOM
+const wreckage = document.querySelector("#wreck-yard");
 
+// Add event listener to startbutton DOM
 startButton.addEventListener("click", startGame);
 
 function startGame() {
@@ -372,7 +375,7 @@ function handleClick(event) {
       let classes = Array.from(event.target.classList);
 
       // test output: ['tile', 'submarine', 'taken', 'hit']
-      console.log(classes);
+      // console.log(classes);
 
       // filter out the irrelevant class names so that only the class name of the battleship is left in the array
       // filter method creates a new array filled with elements that pass a test provided by a function and it does not change the original classes array.
@@ -406,6 +409,14 @@ function handleClick(event) {
     // cloneNode true ensures that all the child elements and their decendants are also cloned
     allComputerTiles.forEach((tile) => tile.replaceWith(tile.cloneNode(true)));
     // Async function to give some time before computer starts its turn (simulate thinking)
+    // Display destroyed AI ships to player! //
+    // wreckage is the variable that stores the parent div.
+    playerSunkShips.forEach((sunkenShip) => {
+      const deadShip = document.createElement("p");
+      deadShip.classList.add("dead");
+      deadShip.innerHTML = sunkenShip;
+      wreckage.appendChild(deadShip);
+    });
     setTimeout(computerTurn, 3000);
   }
 }
@@ -424,12 +435,13 @@ function computerTurn() {
       let randomTurn = Math.floor(Math.random() * width * width);
       // Get the player divs on the board for computer to make its pick on.
       const allPlayerBoardTiles = document.querySelectorAll("#player div");
-      // if the div in the board has already been hit before (it contains both taken and boom class) then computer should pick another starting tile
+      // if the div in the board has already been hit before (it contains both taken and hit class) then computer should pick another starting tile
       // randomTurn picks out a random div from all the player board tiles
       if (
         allPlayerBoardTiles[randomTurn].classList.contains("taken") &&
-        allPlayerBoardTiles[randomTurn].classList.contains("boom")
+        allPlayerBoardTiles[randomTurn].classList.contains("hit")
       ) {
+        // run computer turn again to pick another tile that has not been choosen before
         computerTurn();
         return;
         // if the div in the board has not "!" been hit before and the tile contains a ship as denoted by the class "taken" then add the class hit to the div.
@@ -511,6 +523,7 @@ function checkScore(user, userHits, userSunkShips) {
       // if shipName parameter has passed through all the above if statements then it has been destroyed and it will now be updated into the respective sunken ship array.
       // userSunken ship is passed through checkScore function that this function is within and called in the respective computer and player turns above!
       userSunkShips.push(shipName);
+      // Get array that stores that information and display it out in DOM
     }
   }
 
@@ -542,4 +555,12 @@ function checkScore(user, userHits, userSunkShips) {
 // To do 13/07/2021:
 // 1. Do some basic styling to tidy up and make game presentable and fix alignments (Make some CSS for the ships and board)
 // 2. Display the ships that the user has destroyed
-// 3. Create a refresh or restart function
+// 3. Create a refresh or restart function (Done!)
+
+// Game Restart Button
+
+// Get button DOM
+const restart = document.querySelector("#restart");
+
+// Callback function represents restart function
+restart.addEventListener("click", () => document.location.reload());
