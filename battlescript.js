@@ -323,7 +323,7 @@ const infoDisplay = document.querySelector("#info");
 // Store turn display dom in a variable
 const turnDisplay = document.querySelector("#turn-display");
 // get the wreckyard DOM
-const wreckage = document.querySelector("#wreck-yard");
+const wreckage = document.querySelector(".wreck-yard");
 
 // Add event listener to startbutton DOM
 startButton.addEventListener("click", startGame);
@@ -365,6 +365,17 @@ const computerSunkShips = [];
 function handleClick(event) {
   // As long as game is still being played. If the selected tile has a ship add the class "hit" to the tile indicating a hit through CSS
   if (!gameOver) {
+    // Condition if same spot hit twice by player
+    if (
+      event.target.classList.contains("hit") ||
+      event.target.classList.contains("miss")
+    ) {
+      // Remove event listener for those tiles
+      event.target.replaceWith(event.target.cloneNode(true));
+      // run the function over again to let the player retry!
+      handleClick(event);
+    }
+
     if (event.target.classList.contains("taken")) {
       // Turns the tile red
       event.target.classList.add("hit");
@@ -400,6 +411,7 @@ function handleClick(event) {
       // css styling will be applied upon "miss" hits
       event.target.classList.add("miss");
     }
+
     // if above 2 if statements run then end player turn by setting playerTurn = false
     playerTurn = false;
     // get the computer tiles
@@ -409,14 +421,6 @@ function handleClick(event) {
     // cloneNode true ensures that all the child elements and their decendants are also cloned
     allComputerTiles.forEach((tile) => tile.replaceWith(tile.cloneNode(true)));
     // Async function to give some time before computer starts its turn (simulate thinking)
-    // Display destroyed AI ships to player! //
-    // wreckage is the variable that stores the parent div.
-    playerSunkShips.forEach((sunkenShip) => {
-      const deadShip = document.createElement("p");
-      deadShip.classList.add("dead");
-      deadShip.innerHTML = sunkenShip;
-      wreckage.appendChild(deadShip);
-    });
     setTimeout(computerTurn, 3000);
   }
 }
@@ -427,8 +431,8 @@ function handleClick(event) {
 function computerTurn() {
   // Game still has to be going
   if (!gameOver) {
-    turnDisplay.textContent = "Computer turn";
-    infoDisplay.textContent = "The computer is thinking...";
+    turnDisplay.textContent = "Enemy turn";
+    infoDisplay.textContent = "The enemy is thinking...";
 
     setTimeout(() => {
       // Getting the computer to pick a random tile
@@ -451,7 +455,7 @@ function computerTurn() {
         !allPlayerBoardTiles[randomTurn].classList.contains("hit")
       ) {
         allPlayerBoardTiles[randomTurn].classList.add("hit");
-        infoDisplay.textContent = "Computer Hit!";
+        infoDisplay.textContent = "Enemy Hit!";
         // Same as above except this time we convert allPlayerBoardTiles[randomTurn] inbto the array and take all the classes of the random turn and put it in an array called classes
         // Unlike player turn in here we are letting the AI randomly choose the choice so there is no need to listen to the event target and we use allPlayerBoardTiles[randomTurn] instead
         let classes = Array.from(allPlayerBoardTiles[randomTurn]);
@@ -465,7 +469,7 @@ function computerTurn() {
         // Else statement for if the computer missed a tile
       } else {
         // Display to the player that the compyter missed
-        infoDisplay.textContent = "Computer Miss!";
+        infoDisplay.textContent = "Enemy Miss!";
         // Indicate a miss on the tile that was clicked by modifying the classList with a miss
         allPlayerBoardTiles[randomTurn].classList.add("miss");
       }
@@ -510,7 +514,7 @@ function checkScore(user, userHits, userSunkShips) {
           (storedShipName) => storedShipName !== shipName
         );
         // if ship length matches object ship then display the respective ship that got sunk by player
-        infoDisplay.textContent = `You sunk the computer's ${shipName}`;
+        infoDisplay.textContent = `You sunk the enemy's ${shipName}`;
       }
       // same logic as above if statement for the computer's array
       if (user === "computer") {
@@ -524,6 +528,17 @@ function checkScore(user, userHits, userSunkShips) {
       // userSunken ship is passed through checkScore function that this function is within and called in the respective computer and player turns above!
       userSunkShips.push(shipName);
       // Get array that stores that information and display it out in DOM
+      // Display destroyed AI ships to player! //
+      // wreckage is the variable that stores the parent div.
+      console.log(playerSunkShips);
+      playerSunkShips.forEach((sunkenShip) => {
+        const deadShip = document.createElement("p");
+        deadShip.classList.add("dead");
+        deadShip.innerHTML = sunkenShip;
+        wreckage.appendChild(deadShip);
+      });
+      // Prevents the previous ship in the array from being displayed again
+      playerSunkShips.pop();
     }
   }
 

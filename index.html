@@ -37,13 +37,14 @@
       <p>Info: <span id="info"></span></p>
     </div>
     <div class="board-identity-container">
-      <p>Your Fleet</p>
-      <p>Enemy Fleet</p>
+      <p id="your-fleet">Your Fleet</p>
+      <p id="enemy-fleet">Enemy Fleet</p>
     </div>
     <!-- Gameboards Container -->
     <div id="gameboards-container"></div>
-    <div class="ship-container-pos">
-      <!-- Player Shipyard Container -->
+
+    <!-- Player Shipyard Container -->
+    <div class="shipyard-pos">
       <div class="shipyard-container bg-light">
         <!-- Player Shipyard models -->
         <!-- draggable = true to allow player to drag ship onto board -->
@@ -58,19 +59,23 @@
           draggable="true"
         ></div>
       </div>
+      <!-- Wreckage Yard -->
+      <div class="wreck-yard bg-light"></div>
     </div>
-    <!-- Wreckage Yard -->
-    <div id="wreck-yard">Enemy Ship Graveyard</div>
 
     <!-- Game buttons -->
     <!-- Start Game -->
-    <button type="button" class="btn btn-primary" id="start-game">Start</button>
-    <!-- Rotate button -->
-    <button type="button" class="btn btn-secondary" id="rotate-ship">
-      Rotate
+    <button type="button" class="btn btn-primary control" id="start-game">
+      Start
     </button>
     <!-- Restart Game Button -->
-    <button type="button" class="btn btn-primary" id="restart">Restart</button>
+    <button type="button" class="btn btn-primary control" id="restart">
+      Restart
+    </button>
+    <!-- Rotate button -->
+    <button type="button" class="btn btn-secondary control" id="rotate-ship">
+      Rotate
+    </button>
     <script src="battlescript.js"></script>
 
     <!-- Bootstrap javascript -->
