@@ -150,6 +150,7 @@ function checkPosVal(allBoardTiles, horizontalShip, startIndex, ship) {
         (valid =
           // index 0 is used as the function is called 5x through a forEach loop below.Each time the function runs shipsOnBoard will only have 1 ship item with all the tiles needed for the ship and index 0 being the first tile that ship will be placed on
           // Check if (19/10 remainder = 9) is not equal to [10 - (5-(19 + 1 )= 25]) --> Therefore, valid is false ( it will be fed into the if statement below for coloring the tiles) -- in this case it will go to else and the whole function repeats
+          // Adding 1 to offset index based counting starting from 0
           shipsOnBoard[0].id % width !==
           width - (shipsOnBoard.length - (index + 1)))
     );
@@ -157,9 +158,8 @@ function checkPosVal(allBoardTiles, horizontalShip, startIndex, ship) {
     // For verticle ships check if ship tile split at the top or bottom
     shipsOnBoard.every(
       (_shipTile, index) =>
-        // 90 is the first tile of the last row.
-        // Check if the 1st item in the array is less than 90 + (10+0+1) = 101(it shd be below 90 but it does not exist as the board is only 10x10) and if it is then it is valid and assign to valid (if not generate random again later by calling the higher order function below!)
-        // Since the verticles ships are added downwards. We are only concerned with the last row of the board (index 90-99)
+        // if the condition is not met means the ship is splitting at the top and bottom so valid = false
+        // 90 is the first tile of the last row
         (valid = shipsOnBoard[0].id < 90 + (width + index + 1))
     );
   }
@@ -261,7 +261,8 @@ function startDragShip(event) {
 
 // Callback function for event listener "dragover"
 function dragOverTile(event) {
-  //Default event of "dragover" will be cancelled
+  //Default event of "dragover" will be cancelled (By default dravover would not allow to drag over another element.)
+  // But need to drag over tile divs to drop over it
   event.preventDefault();
   // Get the correct ship out through the id from shipsArray
   const ship = shipsArray[draggedShip.id];
@@ -303,7 +304,9 @@ function tileAreaIndicator(startIdForShip, ship) {
   // Add and remove the hover classes on the tile divs on the board
   if (valid && notTaken) {
     shipsOnBoard.forEach((shipTile) => {
+      // CSS applied to hover to show player that those tiles are being hovered over
       shipTile.classList.add("hover");
+      // This will only let hover effect be around for half a second
       setTimeout(() => shipTile.classList.remove("hover"), 500);
     });
   }
