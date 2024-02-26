@@ -1,5 +1,7 @@
 # Battleship
 
+https://mrsurenk.github.io/Battleship/
+
 > Background info
 
 Classic childhood game we have learnt to love! Test yourself in a game of battleship against the enemy. Each side starts with a fleet of state of the art battleships from tiny destructors to mega aircraft-carriers. See if you can stop the enemy before the enemy stops YOU! Good luck and have fun!
